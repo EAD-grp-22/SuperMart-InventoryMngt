@@ -1,0 +1,45 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: inventory-management
+  data:
+    mongodb:
+      uri: mongodb+srv://grp22:v9q8YIAN7YV37RY4@inventory-management.lw9vy2f.mongodb.net/?retryWrites=true&w=majority
+      database: inventory-management
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      order:
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+  retry:
+    instances:
+      order:
+        max-attempts: 3
+        wait-duration: 5s
